@@ -399,8 +399,8 @@ export default function Home() {
         </div>
         <div className="w-full max-w-md card-neu p-8 sm:p-10">
           <header className="mb-8 text-center">
-            <div className="inline-flex items-center justify-center h-12 w-12 rounded-2xl bg-ceramic-card border border-white/80 shadow-neu-pill mb-4 text-emerald font-mono font-bold text-xl">
-              RZ
+            <div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-ceramic-card border border-white/80 shadow-neu-pill mb-4 text-emerald">
+              <DivisionLogoIcon className="w-7 h-7" />
             </div>
             <h1 className="font-sans text-3xl font-semibold tracking-tight text-ink mb-1">
               Razão
@@ -685,6 +685,51 @@ export default function Home() {
 // COMPONENTES VISUAIS (DESIGN SYSTEM)
 // ==========================================
 
+function DivisionLogoIcon({ className = "w-6 h-6" }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+    >
+      {/* Marcador Superior (Numerador / Entradas / Razão) */}
+      <circle cx="12" cy="5" r="2.25" fill="currentColor" />
+      <circle
+        cx="12"
+        cy="5"
+        r="4"
+        stroke="currentColor"
+        strokeWidth="0.8"
+        strokeOpacity="0.45"
+        strokeDasharray="2 1.5"
+      />
+
+      {/* Barra Divisora Central (Equilíbrio / Proporção de Gastos) */}
+      <rect
+        x="3.5"
+        y="10.75"
+        width="17"
+        height="2.5"
+        rx="1.25"
+        fill="currentColor"
+      />
+
+      {/* Marcador Inferior (Denominador / Tempo / Despesas) */}
+      <circle cx="12" cy="19" r="2.25" fill="currentColor" />
+      <circle
+        cx="12"
+        cy="19"
+        r="4"
+        stroke="currentColor"
+        strokeWidth="0.8"
+        strokeOpacity="0.45"
+        strokeDasharray="2 1.5"
+      />
+    </svg>
+  );
+}
+
 function ThemeSwitcher({
   currentTheme,
   onThemeChange,
@@ -799,12 +844,9 @@ function ChicLoadingScreen({
           />
         </svg>
 
-        {/* Emblema central tátil */}
-        <div className="absolute flex flex-col items-center justify-center h-14 w-14 rounded-2xl bg-ceramic-card border border-white/60 shadow-neu-pill">
-          <span className="font-mono font-bold text-base text-emerald tracking-tight">
-            RZ
-          </span>
-          <span className="h-1 w-1 rounded-full bg-emerald animate-pulse mt-0.5" />
+        {/* Emblema central tátil com ícone de divisão */}
+        <div className="absolute flex items-center justify-center h-14 w-14 rounded-2xl bg-ceramic-card border border-white/60 shadow-neu-pill text-emerald">
+          <DivisionLogoIcon className="w-7 h-7 animate-pulse" />
         </div>
       </div>
 
@@ -870,8 +912,8 @@ function Header({
     <header className="space-y-4">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center h-10 w-10 rounded-2xl bg-ceramic-card border border-white/80 shadow-neu-pill text-emerald font-mono font-bold text-lg">
-            RZ
+          <div className="flex items-center justify-center h-11 w-11 rounded-2xl bg-ceramic-card border border-white/80 shadow-neu-pill text-emerald">
+            <DivisionLogoIcon className="w-6 h-6" />
           </div>
           <div>
             <div className="flex items-center gap-2">

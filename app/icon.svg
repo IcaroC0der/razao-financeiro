@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <rect width="32" height="32" rx="9" fill="#111412"/>
+  <rect x="0.75" y="0.75" width="30.5" height="30.5" rx="8.25" fill="#171B18" stroke="#2B352E" stroke-width="1"/>
+  
+  <!-- Marcador Superior (Numerador / Razão) -->
+  <circle cx="16" cy="8" r="2.8" fill="#10B981"/>
+  <circle cx="16" cy="8" r="4.8" stroke="#10B981" stroke-width="0.9" stroke-opacity="0.45" stroke-dasharray="2 1.5"/>
+
+  <!-- Barra Central de Divisão -->
+  <rect x="5.5" y="14.5" width="21" height="3" rx="1.5" fill="#10B981"/>
+
+  <!-- Marcador Inferior (Denominador / Tempo) -->
+  <circle cx="16" cy="24" r="2.8" fill="#10B981"/>
+  <circle cx="16" cy="24" r="4.8" stroke="#10B981" stroke-width="0.9" stroke-opacity="0.45" stroke-dasharray="2 1.5"/>
+</svg>
