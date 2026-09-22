@@ -33,7 +33,30 @@ type User = {
   nome: string;
 };
 
+type Theme = "dark" | "slate" | "ceramic" | "sand";
+
+const themes: { id: Theme; name: string; label: string; preview: string }[] = [
+  { id: "dark", name: "Obsidian", label: "Escuro Padrão", preview: "#111412" },
+  { id: "slate", name: "Cyber", label: "Azul Noturno", preview: "#0D1119" },
+  { id: "ceramic", name: "Sálvia", label: "Cerâmica Clara", preview: "#EAEFE6" },
+  { id: "sand", name: "Areia", label: "Pedra & Argila", preview: "#ECE7DD" },
+];
+
 export default function Home() {
+  const [theme, setTheme] = useState<Theme>("dark");
+
+  useEffect(() => {
+    const saved = (localStorage.getItem("razao_theme") as Theme) || "dark";
+    setTheme(saved);
+    document.documentElement.setAttribute("data-theme", saved);
+  }, []);
+
+  function handleThemeChange(newTheme: Theme) {
+    setTheme(newTheme);
+    localStorage.setItem("razao_theme", newTheme);
+    document.documentElement.setAttribute("data-theme", newTheme);
+  }
+
   const [user, setUser] = useState<User | null>(null);
   const [authChecking, setAuthChecking] = useState(true);
   const [authMode, setAuthMode] = useState<"login" | "register">("login");
@@ -46,6 +69,7 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<"ciclo" | "relatorio">("ciclo");
 
   const [loading, setLoading] = useState(false);
+  const [dataLoaded, setDataLoaded] = useState(false);
   const [salario, setSalario] = useState(0);
   const [salarioInput, setSalarioInput] = useState("0");
   const [metaPoupanca, setMetaPoupanca] = useState(0);
@@ -121,6 +145,7 @@ export default function Home() {
       console.error("Erro ao carregar dados:", err);
     } finally {
       if (showLoadingScreen) setLoading(false);
+      setDataLoaded(true);
     }
   }
 
@@ -167,6 +192,7 @@ export default function Home() {
     setUser(null);
     setSelectedCycleId(null);
     setCycle(null);
+    setDataLoaded(false);
   }
 
   const stats = useMemo(() => {
@@ -353,15 +379,12 @@ export default function Home() {
 
   if (authChecking) {
     return (
-      <main className="min-h-screen flex items-center justify-center bg-ceramic text-ink">
-        <div className="flex items-center gap-3 card-neu px-6 py-4">
-          <span className="relative flex h-3 w-3">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald"></span>
-          </span>
-          <p className="font-mono text-xs uppercase tracking-widest text-ink/70">
-            carregando o razão…
-          </p>
+      <main className="min-h-screen flex items-center justify-center px-4 py-12 bg-ceramic text-ink relative">
+        <div className="absolute top-6 right-6">
+          <ThemeSwitcher currentTheme={theme} onThemeChange={handleThemeChange} />
+        </div>
+        <div className="w-full max-w-md">
+          <ChicLoadingScreen label="Inicializando sessão segura…" compact />
         </div>
       </main>
     );
@@ -370,7 +393,10 @@ export default function Home() {
   // Se não estiver autenticado, exibe tela de login / cadastro
   if (!user) {
     return (
-      <main className="min-h-screen flex items-center justify-center px-5 py-12 bg-ceramic text-ink">
+      <main className="min-h-screen flex items-center justify-center px-5 py-12 bg-ceramic text-ink relative">
+        <div className="absolute top-6 right-6">
+          <ThemeSwitcher currentTheme={theme} onThemeChange={handleThemeChange} />
+        </div>
         <div className="w-full max-w-md card-neu p-8 sm:p-10">
           <header className="mb-8 text-center">
             <div className="inline-flex items-center justify-center h-12 w-12 rounded-2xl bg-ceramic-card border border-white/80 shadow-neu-pill mb-4 text-emerald font-mono font-bold text-xl">
@@ -471,6 +497,25 @@ export default function Home() {
     );
   }
 
+  if (user && !dataLoaded) {
+    return (
+      <main className="min-h-screen px-4 py-8 sm:px-6 sm:py-12 bg-ceramic text-ink">
+        <div className="mx-auto max-w-4xl space-y-6">
+          <Header
+            today={hoje}
+            userName={user.nome}
+            onLogout={handleLogout}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            currentTheme={theme}
+            onThemeChange={handleThemeChange}
+          />
+          <ChicLoadingScreen label="Sincronizando ciclos e despesas…" />
+        </div>
+      </main>
+    );
+  }
+
   const isViewingPastCycle = selectedCycleId !== null && cycle?.status === "encerrado";
 
   return (
@@ -482,6 +527,8 @@ export default function Home() {
           onLogout={handleLogout}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
+          currentTheme={theme}
+          onThemeChange={handleThemeChange}
         />
 
         {activeTab === "relatorio" ? (
@@ -638,18 +685,179 @@ export default function Home() {
 // COMPONENTES VISUAIS (DESIGN SYSTEM)
 // ==========================================
 
+function ThemeSwitcher({
+  currentTheme,
+  onThemeChange,
+}: {
+  currentTheme: Theme;
+  onThemeChange: (t: Theme) => void;
+}) {
+  return (
+    <div className="flex items-center gap-1 p-1 rounded-full bg-ceramic-recessed border border-[#D2DACB]/60 shadow-neu-inset">
+      {themes.map((t) => {
+        const isActive = currentTheme === t.id;
+        return (
+          <button
+            key={t.id}
+            onClick={() => onThemeChange(t.id)}
+            title={`${t.name} (${t.label})`}
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-mono transition-all ${
+              isActive
+                ? "bg-ceramic-card text-ink font-bold shadow-neu-pill border border-white/40"
+                : "text-slate-ind hover:text-ink opacity-70 hover:opacity-100"
+            }`}
+          >
+            <span
+              className="inline-block h-2.5 w-2.5 rounded-full border border-black/30 shadow-sm"
+              style={{ backgroundColor: t.preview }}
+            />
+            <span className="hidden sm:inline text-[10px] uppercase tracking-wider">
+              {t.name}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function ChicLoadingScreen({
+  label = "Sincronizando dados…",
+  compact = false,
+}: {
+  label?: string;
+  compact?: boolean;
+}) {
+  return (
+    <div
+      className={`card-neu flex flex-col items-center justify-center text-center space-y-6 relative overflow-hidden ${
+        compact ? "p-8 sm:p-10" : "p-10 sm:p-16 min-h-[400px]"
+      }`}
+    >
+      {/* Detalhes de hardware industrial */}
+      <div className="absolute top-4 left-6 flex items-center gap-2 font-mono text-[9px] uppercase tracking-widest text-slate-ind opacity-60">
+        <span className="h-1.5 w-1.5 rounded-full bg-emerald animate-ping" />
+        <span>SYS // SYNC</span>
+      </div>
+      <div className="absolute top-4 right-6 font-mono text-[9px] uppercase tracking-widest text-slate-ind opacity-60">
+        PRECISION OS
+      </div>
+
+      {/* Dial mecânico animado de anel duplo */}
+      <div className="relative flex items-center justify-center my-2">
+        {/* Anel externo tracejado com rotação contínua */}
+        <svg
+          className="w-28 h-28 sm:w-32 sm:h-32 animate-[spin_10s_linear_infinite]"
+          viewBox="0 0 100 100"
+        >
+          <circle
+            cx="50"
+            cy="50"
+            r="44"
+            fill="none"
+            stroke="var(--border-line)"
+            strokeWidth="1.5"
+            strokeDasharray="3 5"
+          />
+          <circle
+            cx="50"
+            cy="50"
+            r="44"
+            fill="none"
+            stroke="var(--accent-emerald)"
+            strokeWidth="2.5"
+            strokeDasharray="45 180"
+            strokeLinecap="round"
+          />
+        </svg>
+
+        {/* Anel interno contra-rotativo */}
+        <svg
+          className="absolute inset-0 w-28 h-28 sm:w-32 sm:h-32 animate-[spin_6s_linear_infinite_reverse]"
+          viewBox="0 0 100 100"
+        >
+          <circle
+            cx="50"
+            cy="50"
+            r="34"
+            fill="none"
+            stroke="var(--border-line)"
+            strokeWidth="1"
+            strokeDasharray="2 6"
+            opacity="0.7"
+          />
+          <circle
+            cx="50"
+            cy="50"
+            r="34"
+            fill="none"
+            stroke="var(--accent-emerald)"
+            strokeWidth="2"
+            strokeDasharray="25 150"
+            strokeLinecap="round"
+            opacity="0.85"
+          />
+        </svg>
+
+        {/* Emblema central tátil */}
+        <div className="absolute flex flex-col items-center justify-center h-14 w-14 rounded-2xl bg-ceramic-card border border-white/60 shadow-neu-pill">
+          <span className="font-mono font-bold text-base text-emerald tracking-tight">
+            RZ
+          </span>
+          <span className="h-1 w-1 rounded-full bg-emerald animate-pulse mt-0.5" />
+        </div>
+      </div>
+
+      {/* Pill de status e cabeçalhos */}
+      <div className="space-y-2 max-w-sm">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ceramic-recessed border border-white/10 shadow-neu-inset text-[10px] font-mono uppercase tracking-widest text-slate-ind">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald"></span>
+          </span>
+          <span>{label}</span>
+        </div>
+        <h3 className="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink">
+          Carregando o Razão
+        </h3>
+        <p className="font-mono text-xs text-slate-ind leading-relaxed">
+          Recalculando ritmo de gastos, orçamento diário e reservas do ciclo em tempo real.
+        </p>
+      </div>
+
+      {/* Barra de progresso chic */}
+      <div className="w-56 sm:w-64 h-2 rounded-full bg-ceramic-recessed shadow-neu-inset overflow-hidden p-0.5 relative">
+        <div className="h-full rounded-full bg-emerald w-1/2 animate-shimmer-sweep" />
+      </div>
+
+      {/* Telemetria e detalhes */}
+      <div className="flex items-center gap-3 text-[10px] font-mono text-slate-ind/60 uppercase tracking-widest pt-2">
+        <span>Cofre Seguro</span>
+        <span>•</span>
+        <span>Multi-Tenant</span>
+        <span>•</span>
+        <span>PostgreSQL Neon</span>
+      </div>
+    </div>
+  );
+}
+
 function Header({
   today,
   userName,
   onLogout,
   activeTab,
   setActiveTab,
+  currentTheme,
+  onThemeChange,
 }: {
   today: string;
   userName: string;
   onLogout: () => void;
   activeTab: "ciclo" | "relatorio";
   setActiveTab: (t: "ciclo" | "relatorio") => void;
+  currentTheme: Theme;
+  onThemeChange: (t: Theme) => void;
 }) {
   const d = new Date(today + "T00:00:00");
   const label = d.toLocaleDateString("pt-BR", {
@@ -680,20 +888,25 @@ function Header({
           </div>
         </div>
 
-        {/* User Pill (Inspirado na Ref 3) */}
-        <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-ceramic-card border border-white/80 shadow-neu-pill text-xs">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald"></span>
-          </span>
-          <span className="text-ink font-medium">Olá, {userName}</span>
-          <span className="text-ink/20">|</span>
-          <button
-            onClick={onLogout}
-            className="text-ink/60 hover:text-brick text-[11px] font-mono uppercase tracking-wider transition-colors"
-          >
-            sair
-          </button>
+        <div className="flex items-center gap-3 flex-wrap">
+          {/* Seletor de Temas (4 temas com Obsidian Escuro por padrão) */}
+          <ThemeSwitcher currentTheme={currentTheme} onThemeChange={onThemeChange} />
+
+          {/* User Pill (Inspirado na Ref 3) */}
+          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-ceramic-card border border-white/80 shadow-neu-pill text-xs">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald"></span>
+            </span>
+            <span className="text-ink font-medium">Olá, {userName}</span>
+            <span className="text-ink/20">|</span>
+            <button
+              onClick={onLogout}
+              className="text-ink/60 hover:text-brick text-[11px] font-mono uppercase tracking-wider transition-colors"
+            >
+              sair
+            </button>
+          </div>
         </div>
       </div>
 
@@ -840,7 +1053,7 @@ function HeroDashboard({ stats }: { stats: ReturnType<typeof computeCycleStats> 
                 cy="18"
                 r="14"
                 fill="none"
-                className="stroke-[#CFD8C8]"
+                stroke="var(--border-line)"
                 strokeWidth="3"
               />
               <circle
@@ -848,11 +1061,12 @@ function HeroDashboard({ stats }: { stats: ReturnType<typeof computeCycleStats> 
                 cy="18"
                 r="14"
                 fill="none"
-                className="stroke-emerald transition-all duration-500"
+                stroke="var(--accent-emerald)"
                 strokeWidth="3.2"
                 strokeDasharray="88"
                 strokeDashoffset={88 - (88 * percentCycleCompleted) / 100}
                 strokeLinecap="round"
+                className="transition-all duration-500"
               />
             </svg>
             <span className="absolute font-mono text-[10px] font-bold text-ink">
@@ -1025,7 +1239,7 @@ function RadialGaugeDial({
             y1={t.y1}
             x2={t.x2}
             y2={t.y2}
-            stroke={t.isActive ? "#171D19" : "#CFD8C8"}
+            stroke={t.isActive ? "var(--text-main)" : "var(--border-line)"}
             strokeWidth={t.isActive ? 2.2 : 1.4}
             strokeLinecap="round"
             className="transition-colors duration-300"
@@ -1038,7 +1252,7 @@ function RadialGaugeDial({
             cx={dotX}
             cy={dotY}
             r="3.5"
-            fill="#1E6B47"
+            fill="var(--accent-emerald)"
             className="transition-all duration-300"
           />
         )}

@@ -2,19 +2,112 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+/* 1. DARK OBSIDIAN (Padrão / Darkest default) */
+:root,
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg-app: #111412;
+  --bg-card: #171B18;
+  --bg-recessed: #0C0F0D;
+  --border-line: #242D26;
+  --border-card: #2B352E;
+  --text-main: #EDF2EC;
+  --text-muted: #8B998C;
+  --accent-emerald: #10B981;
+  --accent-emerald-dark: #059669;
+  --accent-brick: #EF4444;
+  --accent-gold: #F59E0B;
+  --shadow-neu: 8px 8px 20px rgba(0, 0, 0, 0.6), -5px -5px 15px rgba(35, 43, 36, 0.25);
+  --shadow-neu-sm: 4px 4px 10px rgba(0, 0, 0, 0.5), -3px -3px 8px rgba(35, 43, 36, 0.2);
+  --shadow-neu-inset: inset 2px 2px 5px rgba(0, 0, 0, 0.65), inset -2px -2px 5px rgba(35, 43, 36, 0.2);
+  --shadow-neu-pill: 3px 3px 7px rgba(0, 0, 0, 0.5), -3px -3px 7px rgba(35, 43, 36, 0.25);
+  --shadow-neu-pill-active: inset 2px 2px 4px rgba(0, 0, 0, 0.65), inset -2px -2px 4px rgba(35, 43, 36, 0.2);
+  --btn-primary-bg: #EDF2EC;
+  --btn-primary-text: #111412;
+  --btn-primary-hover: #DDE5DC;
+}
+
+/* 2. CYBER SLATE (Deep Industrial Navy Blue) */
+[data-theme="slate"] {
+  color-scheme: dark;
+  --bg-app: #0D1119;
+  --bg-card: #141A26;
+  --bg-recessed: #080B10;
+  --border-line: #20293D;
+  --border-card: #29344D;
+  --text-main: #F1F5F9;
+  --text-muted: #8E9EBA;
+  --accent-emerald: #06B6D4;
+  --accent-emerald-dark: #0891B2;
+  --accent-brick: #F43F5E;
+  --accent-gold: #F59E0B;
+  --shadow-neu: 8px 8px 20px rgba(0, 0, 0, 0.65), -5px -5px 15px rgba(30, 39, 58, 0.25);
+  --shadow-neu-sm: 4px 4px 10px rgba(0, 0, 0, 0.55), -3px -3px 8px rgba(30, 39, 58, 0.2);
+  --shadow-neu-inset: inset 2px 2px 5px rgba(0, 0, 0, 0.7), inset -2px -2px 5px rgba(30, 39, 58, 0.2);
+  --shadow-neu-pill: 3px 3px 7px rgba(0, 0, 0, 0.55), -3px -3px 7px rgba(30, 39, 58, 0.25);
+  --shadow-neu-pill-active: inset 2px 2px 4px rgba(0, 0, 0, 0.7), inset -2px -2px 4px rgba(30, 39, 58, 0.2);
+  --btn-primary-bg: #F1F5F9;
+  --btn-primary-text: #0D1119;
+  --btn-primary-hover: #E2E8F0;
+}
+
+/* 3. CERAMIC SAGE (Tom Cerâmica Suave) */
+[data-theme="ceramic"] {
   color-scheme: light;
+  --bg-app: #EAEFE6;
+  --bg-card: #EEF3EA;
+  --bg-recessed: #E2E8DE;
+  --border-line: #D2DACB;
+  --border-card: rgba(213, 221, 207, 0.8);
+  --text-main: #171D19;
+  --text-muted: #556057;
+  --accent-emerald: #1E6B47;
+  --accent-emerald-dark: #144A31;
+  --accent-brick: #A94432;
+  --accent-gold: #9E741E;
+  --shadow-neu: 7px 7px 16px rgba(180, 192, 175, 0.45), -7px -7px 16px rgba(255, 255, 255, 0.9);
+  --shadow-neu-sm: 4px 4px 9px rgba(180, 192, 175, 0.35), -4px -4px 9px rgba(255, 255, 255, 0.85);
+  --shadow-neu-inset: inset 2px 2px 5px rgba(0, 0, 0, 0.06), inset -2px -2px 5px rgba(255, 255, 255, 0.75);
+  --shadow-neu-pill: 3px 3px 7px rgba(180, 192, 175, 0.35), -3px -3px 7px rgba(255, 255, 255, 0.85);
+  --shadow-neu-pill-active: inset 2px 2px 4px rgba(0, 0, 0, 0.08), inset -2px -2px 4px rgba(255, 255, 255, 0.75);
+  --btn-primary-bg: #171D19;
+  --btn-primary-text: #EEF3EA;
+  --btn-primary-hover: #252E28;
+}
+
+/* 4. WARM SAND (Areia / Terracota Quente) */
+[data-theme="sand"] {
+  color-scheme: light;
+  --bg-app: #ECE7DD;
+  --bg-card: #F2EFE7;
+  --bg-recessed: #E3DDD1;
+  --border-line: #D4CCC0;
+  --border-card: rgba(212, 204, 192, 0.8);
+  --text-main: #221C16;
+  --text-muted: #6B6256;
+  --accent-emerald: #2A7352;
+  --accent-emerald-dark: #1C5139;
+  --accent-brick: #B04630;
+  --accent-gold: #A5771A;
+  --shadow-neu: 7px 7px 16px rgba(188, 180, 166, 0.45), -7px -7px 16px rgba(255, 255, 255, 0.9);
+  --shadow-neu-sm: 4px 4px 9px rgba(188, 180, 166, 0.35), -4px -4px 9px rgba(255, 255, 255, 0.85);
+  --shadow-neu-inset: inset 2px 2px 5px rgba(0, 0, 0, 0.06), inset -2px -2px 5px rgba(255, 255, 255, 0.75);
+  --shadow-neu-pill: 3px 3px 7px rgba(188, 180, 166, 0.35), -3px -3px 7px rgba(255, 255, 255, 0.85);
+  --shadow-neu-pill-active: inset 2px 2px 4px rgba(0, 0, 0, 0.08), inset -2px -2px 4px rgba(255, 255, 255, 0.75);
+  --btn-primary-bg: #221C16;
+  --btn-primary-text: #F2EFE7;
+  --btn-primary-hover: #332B23;
 }
 
 html,
 body {
-  background-color: #EAEFE6;
-  color: #171D19;
+  background-color: var(--bg-app);
+  color: var(--text-main);
   min-height: 100vh;
 }
 
 ::selection {
-  background: #1E6B47;
+  background: var(--accent-emerald);
   color: #FFFFFF;
 }
 
@@ -30,44 +123,97 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
+@keyframes shimmerSweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+.animate-shimmer-sweep {
+  animation: shimmerSweep 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
 @layer components {
   /* Soft Neumorphic & Industrial Containers */
   .card-neu {
-    @apply rounded-3xl bg-[#EEF3EA] border border-[#D5DDCF]/70 shadow-neu transition-all;
+    background-color: var(--bg-card);
+    border-color: var(--border-card);
+    box-shadow: var(--shadow-neu);
+    @apply rounded-3xl border transition-all;
   }
 
   .card-neu-subtle {
-    @apply rounded-2xl bg-[#EEF3EA] border border-[#D5DDCF]/50 shadow-neu-sm;
+    background-color: var(--bg-card);
+    border-color: var(--border-card);
+    box-shadow: var(--shadow-neu-sm);
+    @apply rounded-2xl border transition-all;
   }
 
   .card-neu-recessed {
-    @apply rounded-2xl bg-[#E2E8DE] border border-[#CFD8C8]/60 shadow-neu-inset;
+    background-color: var(--bg-recessed);
+    border-color: var(--border-line);
+    box-shadow: var(--shadow-neu-inset);
+    @apply rounded-2xl border transition-all;
   }
 
   /* Inset Inputs */
   .input {
-    @apply w-full rounded-xl bg-[#E2E8DE] border border-[#CFD8C8]/70 shadow-neu-inset px-3.5 py-2.5 text-sm font-sans text-ink outline-none transition-all placeholder:text-ink/40 focus:border-emerald focus:ring-1 focus:ring-emerald/40;
+    background-color: var(--bg-recessed);
+    border-color: var(--border-line);
+    box-shadow: var(--shadow-neu-inset);
+    color: var(--text-main);
+    @apply w-full rounded-xl px-3.5 py-2.5 text-sm font-sans outline-none transition-all;
+  }
+  .input:focus {
+    border-color: var(--accent-emerald);
+    box-shadow: var(--shadow-neu-inset), 0 0 0 1px var(--accent-emerald);
   }
 
   /* Tactile Buttons */
   .btn-neu {
-    @apply rounded-xl bg-[#EEF3EA] border border-white/80 shadow-neu-pill px-4 py-2 text-sm font-medium text-ink transition-all hover:border-white active:shadow-neu-pill-active active:translate-y-[1px];
+    background-color: var(--bg-card);
+    border-color: var(--border-line);
+    box-shadow: var(--shadow-neu-pill);
+    color: var(--text-main);
+    @apply rounded-xl border px-4 py-2 text-sm font-medium transition-all active:translate-y-[1px];
+  }
+  .btn-neu:hover {
+    border-color: var(--text-muted);
   }
 
   .btn-primary {
-    @apply rounded-xl bg-[#171D19] text-[#EEF3EA] border border-[#2b332d] shadow-neu-sm px-4 py-2 text-sm font-medium transition-all hover:bg-[#252e28] active:translate-y-[1px] active:shadow-inner;
+    background-color: var(--btn-primary-bg);
+    color: var(--btn-primary-text);
+    box-shadow: var(--shadow-neu-sm);
+    @apply rounded-xl border border-transparent px-4 py-2 text-sm font-medium transition-all hover:opacity-90 active:translate-y-[1px] active:shadow-inner;
   }
 
   .btn-emerald {
-    @apply rounded-xl bg-[#1E6B47] text-white border border-[#277a52] shadow-neu-sm px-4 py-2 text-sm font-medium transition-all hover:bg-[#154E34] active:translate-y-[1px];
+    background-color: var(--accent-emerald);
+    color: #FFFFFF;
+    box-shadow: var(--shadow-neu-sm);
+    @apply rounded-xl border border-transparent px-4 py-2 text-sm font-medium transition-all hover:bg-[var(--accent-emerald-dark)] active:translate-y-[1px];
   }
 
   .btn-secondary {
-    @apply rounded-xl bg-[#EEF3EA] border border-white/80 shadow-neu-pill px-4 py-2 text-sm font-medium text-ink transition-all hover:border-white hover:bg-white active:shadow-neu-pill-active active:translate-y-[1px];
+    background-color: var(--bg-card);
+    border-color: var(--border-line);
+    box-shadow: var(--shadow-neu-pill);
+    color: var(--text-main);
+    @apply rounded-xl border px-4 py-2 text-sm font-medium transition-all active:translate-y-[1px];
+  }
+  .btn-secondary:hover {
+    border-color: var(--text-muted);
   }
 
   .btn-danger {
-    @apply rounded-xl bg-[#A94432] text-white border border-[#be513e] shadow-neu-sm px-4 py-2 text-sm font-medium transition-all hover:bg-[#8f3626] active:translate-y-[1px];
+    background-color: var(--accent-brick);
+    color: #FFFFFF;
+    box-shadow: var(--shadow-neu-sm);
+    @apply rounded-xl border border-transparent px-4 py-2 text-sm font-medium transition-all hover:opacity-90 active:translate-y-[1px];
   }
 
   .pill-badge {

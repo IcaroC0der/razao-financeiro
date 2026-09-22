@@ -37,9 +37,10 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
+      data-theme="dark"
       className={`${serif.variable} ${sans.variable} ${mono.variable}`}
     >
-      <body className="font-sans antialiased bg-[#EAEFE6] text-[#171D19]">
+      <body className="font-sans antialiased transition-colors duration-200">
         {children}
       </body>
     </html>
