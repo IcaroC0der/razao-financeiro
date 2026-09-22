@@ -1,10 +1,20 @@
 import { ensureSchema, sql } from "@/lib/db";
 import { AUTH_COOKIE_NAME, createSessionToken, hashPassword } from "@/lib/auth";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
+  const ip = getClientIp(req);
+  const rate = checkRateLimit(`register:${ip}`, 8, 5 * 60 * 1000); // máx 8 cadastros a cada 5 min por IP
+  if (!rate.success) {
+    return NextResponse.json(
+      { error: "Muitas tentativas de cadastro. Por segurança, aguarde alguns minutos." },
+      { status: 429 }
+    );
+  }
+
   await ensureSchema();
   const body = await req.json();
   const { nome, email, senha } = body;
@@ -46,10 +56,12 @@ export async function POST(req: Request) {
   `;
   const user = newUsers[0];
 
-  // Se houver registros antigos sem user_id no banco, atribui ao primeiro usuário criado
-  await sql`UPDATE settings SET user_id = ${user.id} WHERE user_id IS NULL;`;
-  await sql`UPDATE fixed_expenses SET user_id = ${user.id} WHERE user_id IS NULL;`;
-  await sql`UPDATE cycles SET user_id = ${user.id} WHERE user_id IS NULL;`;
+  // Apenas se for o primeiro usuário administrador inicial e houver registros legados
+  if (user.id === 1) {
+    await sql`UPDATE settings SET user_id = ${user.id} WHERE user_id IS NULL;`;
+    await sql`UPDATE fixed_expenses SET user_id = ${user.id} WHERE user_id IS NULL;`;
+    await sql`UPDATE cycles SET user_id = ${user.id} WHERE user_id IS NULL;`;
+  }
 
   // Garante registro de settings para o novo usuário se não tiver
   await sql`

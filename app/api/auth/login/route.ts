@@ -1,10 +1,20 @@
 import { ensureSchema, sql } from "@/lib/db";
 import { AUTH_COOKIE_NAME, createSessionToken, verifyPassword } from "@/lib/auth";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
+  const ip = getClientIp(req);
+  const rate = checkRateLimit(`login:${ip}`, 12, 60 * 1000);
+  if (!rate.success) {
+    return NextResponse.json(
+      { error: "Muitas tentativas de login. Por segurança, aguarde um minuto." },
+      { status: 429 }
+    );
+  }
+
   await ensureSchema();
   const body = await req.json();
   const { email, senha } = body;

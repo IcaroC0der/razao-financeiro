@@ -2,8 +2,12 @@ import { sql } from "@vercel/postgres";
 
 export { sql };
 
-export async function ensureSchema() {
-  await sql`
+let schemaPromise: Promise<void> | null = null;
+
+export async function ensureSchema(): Promise<void> {
+  if (!schemaPromise) {
+    schemaPromise = (async () => {
+      await sql`
     CREATE TABLE IF NOT EXISTS users (
       id SERIAL PRIMARY KEY,
       email TEXT UNIQUE NOT NULL,
@@ -61,16 +65,22 @@ export async function ensureSchema() {
     );
   `;
 
-  await sql`
-    CREATE TABLE IF NOT EXISTS daily_checkins (
-      id SERIAL PRIMARY KEY,
-      cycle_id INTEGER NOT NULL REFERENCES cycles(id) ON DELETE CASCADE,
-      data DATE NOT NULL,
-      dentro_do_limite BOOLEAN NOT NULL,
-      valor_gasto NUMERIC NOT NULL,
-      orcamento_do_dia NUMERIC NOT NULL,
-      created_at TIMESTAMP NOT NULL DEFAULT now(),
-      UNIQUE(cycle_id, data)
-    );
-  `;
+      await sql`
+        CREATE TABLE IF NOT EXISTS daily_checkins (
+          id SERIAL PRIMARY KEY,
+          cycle_id INTEGER NOT NULL REFERENCES cycles(id) ON DELETE CASCADE,
+          data DATE NOT NULL,
+          dentro_do_limite BOOLEAN NOT NULL,
+          valor_gasto NUMERIC NOT NULL,
+          orcamento_do_dia NUMERIC NOT NULL,
+          created_at TIMESTAMP NOT NULL DEFAULT now(),
+          UNIQUE(cycle_id, data)
+        );
+      `;
+    })().catch((err) => {
+      schemaPromise = null;
+      throw err;
+    });
+  }
+  return schemaPromise;
 }

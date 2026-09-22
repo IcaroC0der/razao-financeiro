@@ -2,10 +2,20 @@ import { SignJWT, jwtVerify } from "jose";
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
 
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.AUTH_SECRET || "razao-secret-key-super-secure-token-finance-2026"
-);
 export const AUTH_COOKIE_NAME = "razao_session";
+
+function getJwtSecret(): Uint8Array {
+  const secret = process.env.AUTH_SECRET;
+  if (!secret) {
+    if (process.env.NODE_ENV === "production") {
+      console.warn(
+        "⚠️ [SEGURANÇA] Variável AUTH_SECRET não definida na Vercel. Adicione AUTH_SECRET nas variáveis de ambiente do projeto para máxima proteção dos tokens JWT."
+      );
+    }
+    return new TextEncoder().encode("razao-secret-key-super-secure-token-finance-2026");
+  }
+  return new TextEncoder().encode(secret);
+}
 
 export type AuthUser = {
   id: number;
@@ -30,12 +40,12 @@ export async function createSessionToken(user: AuthUser): Promise<string> {
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("30d")
-    .sign(JWT_SECRET);
+    .sign(getJwtSecret());
 }
 
 export async function verifySessionToken(token: string): Promise<AuthUser | null> {
   try {
-    const { payload } = await jwtVerify(token, JWT_SECRET);
+    const { payload } = await jwtVerify(token, getJwtSecret());
     if (!payload || !payload.id) return null;
     return {
       id: Number(payload.id),
