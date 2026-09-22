@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body {
+  background-color: #EAEFE6;
+  color: #171D19;
+  min-height: 100vh;
+}
+
+::selection {
+  background: #1E6B47;
+  color: #FFFFFF;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@layer components {
+  /* Soft Neumorphic & Industrial Containers */
+  .card-neu {
+    @apply rounded-3xl bg-[#EEF3EA] border border-[#D5DDCF]/70 shadow-neu transition-all;
+  }
+
+  .card-neu-subtle {
+    @apply rounded-2xl bg-[#EEF3EA] border border-[#D5DDCF]/50 shadow-neu-sm;
+  }
+
+  .card-neu-recessed {
+    @apply rounded-2xl bg-[#E2E8DE] border border-[#CFD8C8]/60 shadow-neu-inset;
+  }
+
+  /* Inset Inputs */
+  .input {
+    @apply w-full rounded-xl bg-[#E2E8DE] border border-[#CFD8C8]/70 shadow-neu-inset px-3.5 py-2.5 text-sm font-sans text-ink outline-none transition-all placeholder:text-ink/40 focus:border-emerald focus:ring-1 focus:ring-emerald/40;
+  }
+
+  /* Tactile Buttons */
+  .btn-neu {
+    @apply rounded-xl bg-[#EEF3EA] border border-white/80 shadow-neu-pill px-4 py-2 text-sm font-medium text-ink transition-all hover:border-white active:shadow-neu-pill-active active:translate-y-[1px];
+  }
+
+  .btn-primary {
+    @apply rounded-xl bg-[#171D19] text-[#EEF3EA] border border-[#2b332d] shadow-neu-sm px-4 py-2 text-sm font-medium transition-all hover:bg-[#252e28] active:translate-y-[1px] active:shadow-inner;
+  }
+
+  .btn-emerald {
+    @apply rounded-xl bg-[#1E6B47] text-white border border-[#277a52] shadow-neu-sm px-4 py-2 text-sm font-medium transition-all hover:bg-[#154E34] active:translate-y-[1px];
+  }
+
+  .btn-secondary {
+    @apply rounded-xl bg-[#EEF3EA] border border-white/80 shadow-neu-pill px-4 py-2 text-sm font-medium text-ink transition-all hover:border-white hover:bg-white active:shadow-neu-pill-active active:translate-y-[1px];
+  }
+
+  .btn-danger {
+    @apply rounded-xl bg-[#A94432] text-white border border-[#be513e] shadow-neu-sm px-4 py-2 text-sm font-medium transition-all hover:bg-[#8f3626] active:translate-y-[1px];
+  }
+
+  .pill-badge {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono uppercase tracking-wider;
+  }
+}
